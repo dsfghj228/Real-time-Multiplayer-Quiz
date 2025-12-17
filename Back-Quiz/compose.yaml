@@ -1,0 +1,7 @@
+﻿services:
+  back-quiz:
+    image: back-quiz
+    build:
+      context: .
+      dockerfile: Back-Quiz/Dockerfile
+
