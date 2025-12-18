@@ -5,6 +5,11 @@ namespace Back_Quiz.FluentValidation;
 public class ValidationExceptionMiddleware
 {
     private readonly RequestDelegate _next;
+    
+    public ValidationExceptionMiddleware(RequestDelegate next)
+    {
+        _next = next;
+    }
 
     public async Task InvokeAsync(HttpContext context)
     {
