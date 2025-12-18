@@ -3,6 +3,10 @@
 using System.Text.Json.Serialization;
 using Back_Quiz.Data;
 using Back_Quiz.Enums;
+using Back_Quiz.Interfaces;
+using Back_Quiz.Services;
+using Hangfire;
+using Hangfire.PostgreSql;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.OpenApi.Models;
 
@@ -24,7 +28,24 @@ builder.Services.AddDbContext<ApplicationDbContext>(options =>
     options.UseNpgsql(builder.Configuration.GetConnectionString("PostgreSQL"));
 });
 
+builder.Services.AddHttpClient();
+
+builder.Services.AddHangfire(config => 
+    config.UsePostgreSqlStorage(c =>
+        c.UseNpgsqlConnection(builder.Configuration.GetConnectionString("PostgreSQL"))));
+builder.Services.AddHangfireServer();
+
+builder.Services.AddScoped<IImportDataService, ImportDataService>();
+
 var app = builder.Build();
+
+app.UseHangfireDashboard();
+
+RecurringJob.AddOrUpdate<IImportDataService>(
+    "ImportDataJob",
+    service => service.ImportDataAsync(),
+    Cron.Minutely
+);
 
 if (app.Environment.IsDevelopment())
 {

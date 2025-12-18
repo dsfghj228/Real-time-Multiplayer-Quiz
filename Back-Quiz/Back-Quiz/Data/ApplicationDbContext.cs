@@ -26,12 +26,6 @@ public class ApplicationDbContext : IdentityDbContext<AppUser>
             .HasForeignKey(q => q.QuizTemplateId)
             .OnDelete(DeleteBehavior.Cascade);
 
-        builder.Entity<QuizTemplate>()
-            .HasMany(q => q.Questions)
-            .WithOne(q => q.QuizTemplate)
-            .HasForeignKey(q => q.QuizTemplateId)
-            .OnDelete(DeleteBehavior.Cascade);
-
         builder.Entity<Question>()
             .HasMany(q => q.Options)
             .WithOne(o => o.Question)

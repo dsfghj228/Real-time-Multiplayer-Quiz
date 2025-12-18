@@ -9,8 +9,5 @@ public class Question
     public string Category { get; set; }
     public Difficulty Difficulty { get; set; }
     
-    public Guid QuizTemplateId { get; set; }
-    public QuizTemplate QuizTemplate { get; set; }
-    
     public ICollection<QuestionOption> Options { get; set; } = new List<QuestionOption>();
 }
