@@ -21,21 +21,21 @@ public abstract class CustomExceptions: Exception
     
     public class UserAlreadyExistsException() : CustomExceptions(HttpStatusCode.Conflict,
         "https://tools.ietf.org/html/rfc7231#section-6.5.8",
-        "Пользователь уже существует",
-        "Такой пользователь уже существует");
+        "User already exists",
+        "Such user already exists");
     
     public class InternalServerErrorException(string errors) : CustomExceptions(HttpStatusCode.InternalServerError,
         "https://tools.ietf.org/html/rfc7231#section-6.6.1",
-        "Внутренняя ошибка сервера",
-        $"Произошла непредвиденная ошибка на сервере: @{errors}");
+        "Internal Server Error",
+        $"An unexpected error has occurred on the server: @{errors}");
     
     public class UnauthorizedUsernameException() : CustomExceptions(HttpStatusCode.Unauthorized,
         "https://tools.ietf.org/html/rfc7231#section-6.6.1",
-        "Ошибка авторизации",
-        "При попытке авторизации произошла ошибка. Пользователя с таким username не существует");
+        "Authorization error",
+        "An error occurred while trying to log in. User with such username does not exist");
     
     public class UnauthorizedPasswordException() : CustomExceptions(HttpStatusCode.Unauthorized,
         "https://tools.ietf.org/html/rfc7231#section-6.6.1",
-        "Ошибка авторизации",
-        "При попытке авторизации произошла ошибка. Неверный пароль");
+        "Authorization error",
+        "An error occurred while trying to log in. Wrong password");
 }
