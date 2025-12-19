@@ -103,6 +103,7 @@ builder.Services.AddMediatR(cfg =>
 
 builder.Services.AddScoped<IImportDataService, ImportDataService>();
 builder.Services.AddScoped<IAccountService, AccountService>();
+builder.Services.AddScoped<ITokenService, TokenService>();
 
 var app = builder.Build();
 

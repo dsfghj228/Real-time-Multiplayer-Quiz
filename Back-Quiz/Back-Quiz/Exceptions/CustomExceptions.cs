@@ -24,8 +24,8 @@ public abstract class CustomExceptions: Exception
         "Пользователь уже существует",
         "Такой пользователь уже существует");
     
-    public class InternalServerErrorException() : CustomExceptions(HttpStatusCode.InternalServerError,
+    public class InternalServerErrorException(string errors) : CustomExceptions(HttpStatusCode.InternalServerError,
         "https://tools.ietf.org/html/rfc7231#section-6.6.1",
         "Внутренняя ошибка сервера",
-        "Произошла непредвиденная ошибка на сервере. Пожалуйста, попробуйте позже или обратитесь в поддержку.");
+        $"Произошла непредвиденная ошибка на сервере: @{errors}");
 }
