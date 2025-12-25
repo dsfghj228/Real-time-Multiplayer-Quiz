@@ -8,6 +8,7 @@ using Microsoft.EntityFrameworkCore;
 
 namespace Back_Quiz.Services;
 
+//СДЕЛАТЬ РЕФАКТОРИНГ ПОВТОРЯЮЩЕГОСЯ КОДА В GETCURRENTQUESTIONASYNC И MAKEMOVEASYNC
 public class QuizService : IQuizService
 {
     private readonly IRedisService _redisService;
@@ -19,22 +20,22 @@ public class QuizService : IQuizService
         _context = context;
     }
     
-    public async Task<StartQuizResponse> CreateQuizAsync(string Category, Difficulty Difficulty, int NumberOfQuestions, string UserId)
+    public async Task<StartQuizResponse> CreateQuizAsync(string category, Difficulty difficulty, int numberOfQuestions, string userId)
     {
         var query = _context.Questions
-            .Where(q => q.Category == Category && q.Difficulty == Difficulty)
+            .Where(q => q.Category == category && q.Difficulty == difficulty)
             .Select(q => q.Id);
 
         int count = await query.CountAsync();
         var random = new Random();
-        var skip = random.Next(0, Math.Max(0, count - NumberOfQuestions));
+        var skip = random.Next(0, Math.Max(0, count - numberOfQuestions));
 
         var questionsIds = await query
             .Skip(skip)
-            .Take(NumberOfQuestions)
+            .Take(numberOfQuestions)
             .ToListAsync();
         
-        if(questionsIds.Count < NumberOfQuestions)
+        if(questionsIds.Count < numberOfQuestions)
         {
             throw new CustomExceptions.BusinessRuleViolationException();
         }
@@ -43,7 +44,7 @@ public class QuizService : IQuizService
 
         var session = new QuizSession
         {
-            UserId = UserId,
+            UserId = userId,
             QuestionIds = questionsIds,
             CurrentIndex = 0,
             Answers = new List<UserAnswer>(),
