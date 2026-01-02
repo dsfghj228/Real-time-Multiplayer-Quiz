@@ -9,22 +9,28 @@ public class LoginUserCommandHandler : IRequestHandler<LoginUserCommand, ReturnU
 {
     private readonly IAccountService _accountService;
     private readonly ITokenService _tokenService;
+    private readonly IHttpContextAccessor _httpContextAccessor;
     
-    public LoginUserCommandHandler(IAccountService accountService, ITokenService tokenService)
+    public LoginUserCommandHandler(IAccountService accountService, ITokenService tokenService, IHttpContextAccessor httpContextAccessor)
     {
         _accountService = accountService;
         _tokenService = tokenService;
+        _httpContextAccessor = httpContextAccessor;
     }
     
     public async Task<ReturnUserDto> Handle(LoginUserCommand request, CancellationToken cancellationToken)
     {
         var user = await _accountService.DoesUserExist(request);
 
+        var accessToken = _tokenService.GenerateAccessToken(user);
+        var refreshToken = await _tokenService.GenerateRefreshTokenAsync(user.Id);
+        _tokenService.SetRefreshTokenCookie(refreshToken, _httpContextAccessor.HttpContext);
+
         return new ReturnUserDto
         {
             UserName = user.UserName,
             Email = user.Email,
-            Token = _tokenService.GenerateToken(user)
+            Token = accessToken,
         };
     }
 }

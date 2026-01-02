@@ -8,7 +8,7 @@ using Microsoft.AspNetCore.Identity;
 
 namespace Back_Quiz.MediatR.Handlers;
 
-public class RegisterNewUserCommandHandler : IRequestHandler<RegisterNewUserCommand, ReturnUserDto>
+public class RegisterNewUserCommandHandler : IRequestHandler<RegisterNewUserCommand>
 {
     private readonly UserManager<AppUser> _userManager;
     private readonly IAccountService _accountService;
@@ -21,7 +21,7 @@ public class RegisterNewUserCommandHandler : IRequestHandler<RegisterNewUserComm
         _tokenService = tokenService;
     }
     
-    public async Task<ReturnUserDto> Handle(RegisterNewUserCommand request, CancellationToken cancellationToken)
+    public async Task Handle(RegisterNewUserCommand request, CancellationToken cancellationToken)
     {
         await _accountService.CheckUser(request);
 
@@ -33,16 +33,9 @@ public class RegisterNewUserCommandHandler : IRequestHandler<RegisterNewUserComm
         var createdUser = await _userManager.CreateAsync(appUser, request.Password);
         if (createdUser.Succeeded)
         {
-            return new ReturnUserDto
-            {
-                UserName = appUser.UserName,
-                Email = appUser.Email,
-                Token = _tokenService.GenerateToken(appUser)
-            };
-        }else
-        {
-            var errors = string.Join(", ", createdUser.Errors.Select(e => e.Description));
-            throw new CustomExceptions.InternalServerErrorException(errors);
+            return;
         }
+        var errors = string.Join(", ", createdUser.Errors.Select(e => e.Description));
+        throw new CustomExceptions.InternalServerErrorException(errors);
     }
 }

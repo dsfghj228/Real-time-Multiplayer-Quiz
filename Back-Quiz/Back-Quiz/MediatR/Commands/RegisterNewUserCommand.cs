@@ -4,7 +4,7 @@ using MediatR;
 
 namespace Back_Quiz.MediatR.Commands;
 
-public class RegisterNewUserCommand : IRequest<ReturnUserDto>
+public class RegisterNewUserCommand : IRequest
 {
     public string Username { get; set; }
     public string Email { get; set; }
