@@ -8,4 +8,5 @@ public interface ITokenService
     Task<string> GenerateRefreshTokenAsync(string userId);
     void SetRefreshTokenCookie(string refreshToken, HttpContext context);
     Task LogoutAsync(HttpContext context);
+    Task<string> RefreshTokenAsync(HttpContext context);
 }

@@ -88,4 +88,9 @@ public abstract class CustomExceptions: Exception
         "https://tools.ietf.org/html/rfc7231#section-6.6.1",
         "Result not found",
         "Result was not found.");
+    
+    public class SecurityTokenException(string msg) : CustomExceptions(HttpStatusCode.Unauthorized,
+        "https://tools.ietf.org/html/rfc7231#section-6.6.1",
+        $"@{msg}",
+        "");
 }

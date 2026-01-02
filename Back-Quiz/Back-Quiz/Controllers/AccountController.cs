@@ -53,4 +53,13 @@ public class AccountController : ControllerBase
         await _mediator.Send(command);
         return NoContent();
     }
+    
+    [HttpPost("refresh")]
+    public async Task<IActionResult> RefreshToken()
+    {
+        var command = new RefreshTokenCommand();
+        
+        var result = await _mediator.Send(command);
+        return Ok(new { accessToken = result });
+    }
 }

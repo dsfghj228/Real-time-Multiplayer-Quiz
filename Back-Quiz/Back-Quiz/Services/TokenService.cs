@@ -3,8 +3,10 @@ using System.Security.Claims;
 using System.Security.Cryptography;
 using System.Text;
 using Back_Quiz.Data;
+using Back_Quiz.Exceptions;
 using Back_Quiz.Interfaces;
 using Back_Quiz.Models;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 
@@ -15,12 +17,14 @@ public class TokenService : ITokenService
     private readonly IConfiguration _config;
     private readonly SymmetricSecurityKey _key;
     private readonly ApplicationDbContext _db;
+    private readonly UserManager<AppUser> _userManager;
     
-    public TokenService(IConfiguration config, ApplicationDbContext db)
+    public TokenService(IConfiguration config, ApplicationDbContext db, UserManager<AppUser> userManager)
     {
         _config = config;
         _key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_config["JWT:SigningKey"]));
         _db = db;
+        _userManager = userManager;
     }
     
     public string GenerateAccessToken(AppUser user)
@@ -119,5 +123,34 @@ public class TokenService : ITokenService
                 SameSite = SameSiteMode.None
             });
         }
+    }
+
+    public async Task<string> RefreshTokenAsync(HttpContext context)
+    {
+        if (!context.Request.Cookies.TryGetValue("refresh_token", out var token))
+            throw new CustomExceptions.SecurityTokenException("Refresh token missing");
+        
+        using var sha256 = SHA256.Create();
+        var bytes = sha256.ComputeHash(Encoding.UTF8.GetBytes(token));
+        var tokenHash = Convert.ToBase64String(bytes);
+        
+        var refreshToken = await _db.RefreshTokens.FirstOrDefaultAsync(t => t.Token == tokenHash);
+        
+        if (refreshToken == null || refreshToken.ExpiresAt <= DateTime.UtcNow || refreshToken.RevokedAt != null)
+            throw new CustomExceptions.SecurityTokenException("Invalid refresh token");
+        
+        refreshToken.RevokedAt = DateTime.UtcNow;
+        await _db.SaveChangesAsync();
+        
+        var user = await _userManager.Users.FirstOrDefaultAsync(u => u.Id == refreshToken.UserId);
+        if (user == null)
+            throw new CustomExceptions.SecurityTokenException("User not found");
+        
+        var accessToken = GenerateAccessToken(user);
+        var newRefreshToken = await GenerateRefreshTokenAsync(user.Id);
+        
+        SetRefreshTokenCookie(newRefreshToken, context);
+        
+        return accessToken;
     }
 }
