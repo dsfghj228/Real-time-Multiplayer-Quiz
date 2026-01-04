@@ -17,7 +17,7 @@ function Login() {
     try {
       const response = await login({ username, password });
       console.log(response);
-      navigate("/", { replace: true });
+      navigate("/quiz/start", { replace: true });
     } catch (err) {
       alert("Login failed");
     } finally {
@@ -27,12 +27,12 @@ function Login() {
 
   return (
     <div className="bg-[#E5E5E5] flex items-center justify-center bg-center bg-no-repeat bg-cover h-screen w-screen">
-      <div className="flex items-center justify-center lg:justify-between w-full max-w-[500px] lg:max-w-[1000px] h-full max-h-[750px] bg-white rounded-[20px] lg:p-[50px] p-[20px]">
+      <div className="flex items-center justify-center lg:justify-between w-full max-w-[500px] lg:max-w-[1000px] h-full max-h-[750px] bg-white sm:rounded-[20px] lg:p-[50px] p-[20px]">
         <div>
           <div className="flex flex-col items-center mb-[47px]">
             <p className="text-[#757575] text-lg">Welcome back!</p>
             <h1 className="text-[#424242] text-3xl">
-              Continue to your account
+              Continue to your account.
             </h1>
           </div>
           <div>

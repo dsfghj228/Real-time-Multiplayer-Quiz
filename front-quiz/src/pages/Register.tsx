@@ -28,12 +28,12 @@ function Register() {
 
   return (
     <div className="bg-[#E5E5E5] flex items-center justify-center bg-center bg-no-repeat bg-cover h-screen w-screen">
-      <div className="flex items-center justify-center lg:justify-between w-full max-w-[500px] lg:max-w-[1000px] h-full max-h-[750px] bg-white rounded-[20px] lg:p-[50px] p-[20px]">
+      <div className="flex items-center justify-center lg:justify-between w-full max-w-[500px] lg:max-w-[1000px] h-full max-h-[750px] bg-white sm:rounded-[20px] lg:p-[50px] p-[20px]">
         <div>
           <div className="flex flex-col items-center mb-[47px]">
-            <p className="text-[#757575] text-lg">Welcome back!</p>
+            <p className="text-[#757575] text-lg">Welcome!</p>
             <h1 className="text-[#424242] text-3xl">
-              Continue to your account
+              Create your new account.
             </h1>
           </div>
           <div>
@@ -100,12 +100,14 @@ function Register() {
             className="w-[360px] h-[55px] bg-[#2F3538] rounded-[5px] text-[#FFFFFF] text-sm font-bold mb-[40px]"
             disabled={loading}
           >
-            Login
+            Register
           </button>
           <div className="flex w-[360px] justify-center">
-            <p className="mr-[5px] text-[#757575] text-lg">Not register yet?</p>
-            <Link to="/register">
-              <p className="text-[#212121] text-lg hover:underline">REGISTER</p>
+            <p className="mr-[5px] text-[#757575] text-lg">
+              Already have an account?
+            </p>
+            <Link to="/login">
+              <p className="text-[#212121] text-lg hover:underline">LOGIN</p>
             </Link>
           </div>
         </div>

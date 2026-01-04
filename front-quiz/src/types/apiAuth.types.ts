@@ -14,3 +14,7 @@ export interface registerRequest {
   email: string;
   password: string;
 }
+
+export interface refreshResponse {
+  accessToken: string;
+}
