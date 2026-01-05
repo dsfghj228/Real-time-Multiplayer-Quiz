@@ -325,4 +325,15 @@ public class QuizService : IQuizService
         
         return resultDto;
     }
+
+    public async Task<List<string>> GetCategoriesAsync()
+    {
+        var categories = await _context.Questions
+            .Select(q => q.Category)
+            .Distinct()
+            .AsNoTracking()
+            .ToListAsync();
+        
+        return categories;
+    }
 }

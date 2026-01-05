@@ -1,10 +1,8 @@
 using System.Security.Claims;
 using Back_Quiz.Dtos.Quiz;
-using Back_Quiz.Enums;
 using Back_Quiz.Exceptions;
 using Back_Quiz.MediatR.Commands;
 using Back_Quiz.MediatR.Queries;
-using Back_Quiz.Quiz;
 using MediatR;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -107,6 +105,14 @@ public class QuizController : ControllerBase
             UserId = userId
         };
         
+        var result = await _mediator.Send(query);
+        return Ok(result);
+    }
+    
+    [HttpGet("categories")]
+    public async Task<IActionResult> GetCategories()
+    {
+        var query = new GetQuizCategoriesQuery();
         var result = await _mediator.Send(query);
         return Ok(result);
     }
