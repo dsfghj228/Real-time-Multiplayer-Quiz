@@ -2,6 +2,7 @@ using Back_Quiz.Data;
 using Back_Quiz.Dtos.Account;
 using Back_Quiz.MediatR.Commands;
 using MediatR;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Back_Quiz.Controllers;
@@ -27,8 +28,8 @@ public class AccountController : ControllerBase
             Password = newUser.Password
         };
         
-        var result = await _mediator.Send(command);
-        return Ok(result);
+        await _mediator.Send(command);
+        return StatusCode(201);
     }
 
     [HttpPost("login")]
@@ -42,5 +43,23 @@ public class AccountController : ControllerBase
         
         var result = await _mediator.Send(command);
         return Ok(result);
+    }
+    
+    [Authorize]
+    [HttpPost("logout")]
+    public async Task<IActionResult> Logout()
+    {
+        var command = new LogoutUserCommand();
+        await _mediator.Send(command);
+        return NoContent();
+    }
+    
+    [HttpPost("refresh")]
+    public async Task<IActionResult> RefreshToken()
+    {
+        var command = new RefreshTokenCommand();
+        
+        var result = await _mediator.Send(command);
+        return Ok(new { accessToken = result });
     }
 }

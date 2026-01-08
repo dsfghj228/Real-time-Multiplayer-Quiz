@@ -7,4 +7,6 @@ public class StartQuizResponse
 {
     public string SessionId { get; set; }
     public QuestionDto Question { get; set; }
+    public int? QuestionNumber { get; set; }
+    public int? TotalQuestions { get; set; }
 }
